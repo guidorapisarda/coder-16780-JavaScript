@@ -10,22 +10,18 @@ let value1 = Number(prompt('Ingrese valor:'));
 let value2 = Number(prompt('Ingrese valor:'));
 alert('La operacion ingresada es: *'+input+'*');
 if ( input == 'suma' ){
-    alert('Resultado: '+value1+value2);
-    console.log(value1+value2);
+    alert('Resultado: '+(value1+value2));
 }else{
     if ( input == 'resta' ){
-        alert('Resultado: '+value1-value2);
-        console.log(value1-value2);
+        alert('Resultado: '+(value1-value2));
     }else{
         if ( input == 'multiplicacion' ){
-            alert('Resultado: '+value1*value2);
-            console.log(value1*value2);
+            alert('Resultado: '+ (value1*value2));
         }else{
             if (value2 == 0)
                 alert('No se puede divir por cero.');
             else{
-                alert('Resultado: '+value1/value2);
-                console.log(value1/value2);
+                alert('Resultado: '+(value1/value2));
             }
         }
     }
