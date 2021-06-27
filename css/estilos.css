@@ -1,5 +1,11 @@
 @import url("https://pro.fontawesome.com/releases/v5.10.0/css/all.css");
 
-.bold{
-    font-weight: bold;
+.bold {
+  font-weight: bold;
+}
+
+.card-img-top {
+  width: 100%;
+  height: 15vw;
+  object-fit: cover;
 }

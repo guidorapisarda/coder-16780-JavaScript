@@ -33,7 +33,6 @@ class Compra {
     agregarItem(producto,cantidad){
         let item = new itemCompra(this.items.length+1,producto,cantidad); //le creo un idItem a cada uno, a partir de la cantidad de items del vector "items".
         this.items.push(item);
-        console.log(this.items);
     }
 
     //Metodo para remover items a la compra.
@@ -67,10 +66,6 @@ class Compra {
     calcularTotal = () => {
         let subtotal = this.calculoSubtotal();
         return (subtotal*iva/100)+subtotal;
-    }
-
-    mostrarValor = value => {
-        document.getElementById('output').innerHTML = value;
     }
 }
 
