@@ -119,22 +119,43 @@ const agregarCarrito = (e) => {
     unidades: unidades
   }
 
-  let carritoActual = localStorage.getItem('carrito');
+  let carrito = obtenerCarrito();
 
-  if(!carritoActual){
-    carritoActual = {productos:[]}
-  }else{
-    carritoActual=JSON.parse(carritoActual);
-  }
+  carrito.productos.push(nuevaSeleccion);
+  localStorage.setItem('carrito',JSON.stringify(carrito));
+}
+
+const obtenerCarrito = () => {
+  let carrito = localStorage.getItem('carrito');
+  if(!carrito)
+    carrito = {productos:[]}
+  else
+    carrito=JSON.parse(carrito);
+
+  return carrito;
+}
+
+const renderCart = (cart) => {
+  let cartItems = cart.productos;
   
-  carritoActual.productos.push(nuevaSeleccion);
+  cartItems.forEach( item => {
+    let html = document.querySelector('#cart-list .items');
+    qty = item.unidades;
+    item = buscarProducto(item.idProducto);
+    let newItem = document.createElement('tr');
+    newItem.innerHTML+= `<td>img</td><td>${item.nombre}</td><td>${item.valor}</td><td>${qty}</td>`
 
-  localStorage.setItem('carrito',JSON.stringify(carritoActual));
+    html.appendChild(newItem);
+  });
+
 }
 
 //Agrego la funcion "agregarCarrito" a los botones, para que la ejecuten cuando sean presionados.
 let botones = document.querySelectorAll('.product');
-
 botones.forEach( boton => {
   boton.addEventListener("click", agregarCarrito);
 });
+
+//Agrego la funcion renderCart al carrito, para que me muestre lo que tengo agregado.
+let cart = document.querySelector('.cart')
+cart.addEventListener('hover', renderCart(obtenerCarrito())); 

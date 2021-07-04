@@ -9,3 +9,37 @@
   height: 15vw;
   object-fit: cover;
 }
+
+#img-carrito {
+  width: 20px;
+  height: 20px;
+}
+
+.cart #cart-content {
+  display: none;
+}
+.cart:hover #cart-content {
+  display: block;
+  position: absolute;
+  right: 0;
+
+  top: 100%;
+  z-index: 1;
+  background-color: white;
+  padding: 20px;
+  /* min-height: 400px; */
+  min-width: 300px;
+}
+
+.cart:active #cart-content {
+  display: block;
+  position: absolute;
+  right: 0;
+
+  top: 100%;
+  z-index: 1;
+  background-color: white;
+  padding: 20px;
+  /* min-height: 400px; */
+  min-width: 300px;
+}
