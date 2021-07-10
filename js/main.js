@@ -123,6 +123,7 @@ const agregarCarrito = (e) => {
 
   carrito.productos.push(nuevaSeleccion);
   localStorage.setItem('carrito',JSON.stringify(carrito));
+  renderCart(carrito);
 }
 
 const obtenerCarrito = () => {
@@ -131,31 +132,39 @@ const obtenerCarrito = () => {
     carrito = {productos:[]}
   else
     carrito=JSON.parse(carrito);
-
   return carrito;
 }
 
 const renderCart = (cart) => {
   let cartItems = cart.productos;
-  
+  let html = document.querySelector('#cart-list .items');
+  html.textContent = '';
   cartItems.forEach( item => {
-    let html = document.querySelector('#cart-list .items');
     qty = item.unidades;
     item = buscarProducto(item.idProducto);
     let newItem = document.createElement('tr');
     newItem.innerHTML+= `<td>img</td><td>${item.nombre}</td><td>${item.valor}</td><td>${qty}</td>`
-
     html.appendChild(newItem);
   });
-
 }
 
 //Agrego la funcion "agregarCarrito" a los botones, para que la ejecuten cuando sean presionados.
-let botones = document.querySelectorAll('.product');
-botones.forEach( boton => {
-  boton.addEventListener("click", agregarCarrito);
-});
+$('.product').click(agregarCarrito);
 
 //Agrego la funcion renderCart al carrito, para que me muestre lo que tengo agregado.
-let cart = document.querySelector('.cart')
-cart.addEventListener('hover', renderCart(obtenerCarrito())); 
+$(document).ready(function () {
+  //renderizo el carrito ni bien está disponible la página.
+  renderCart(obtenerCarrito());
+
+  //muestro u oculto el carrito según se necesite.
+  $(".cart").click( function(){
+    let cart = $('#cart-content',this);
+    if(cart.prop("classList").value == 'hideCart'){
+      cart.removeClass('hideCart');
+      cart.addClass('showCart');
+    }else{
+      cart.removeClass('showCart');
+      cart.addClass('hideCart');
+    }
+  });
+});

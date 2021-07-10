@@ -15,27 +15,14 @@
   height: 20px;
 }
 
-.cart #cart-content {
+.hideCart {
   display: none;
 }
-.cart:hover #cart-content {
+
+.showCart {
   display: block;
   position: absolute;
   right: 0;
-
-  top: 100%;
-  z-index: 1;
-  background-color: white;
-  padding: 20px;
-  /* min-height: 400px; */
-  min-width: 300px;
-}
-
-.cart:active #cart-content {
-  display: block;
-  position: absolute;
-  right: 0;
-
   top: 100%;
   z-index: 1;
   background-color: white;
