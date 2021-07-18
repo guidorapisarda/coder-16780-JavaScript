@@ -1,12 +1,13 @@
 const iva = 21;
 
 class Producto {
-    constructor(id,nombre,descripcion,valor,stock){
+    constructor(id,nombre,descripcion,valor,stock,image){
         this.id=id;
         this.nombre=nombre;
         this.descripcion=descripcion;
         this.valor=valor;
         this.stock=stock;
+        this.image=image;
     }
 
     //metodo para agregar stock.
