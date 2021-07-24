@@ -25,14 +25,35 @@ const filterProd = idProd => prod.id == idProducto;
 const crearCompra = (carrito) => {
   let idCompra = compras.length + 1;
   let compraActual = new Compra(idCompra);
-  for (i = 0; i < carrito.length; i++) {
-    let itemCarrito = carrito[i];
+  let productos = carrito.productos;
+  for (let i = 0; i < productos.length; i++) {
+    let itemCarrito = productos[i];
     let productoActual = buscarProducto(itemCarrito.idProducto);
     if (productoActual) {
+      productoActual.removerStock(itemCarrito.unidades);
       compraActual.agregarItem(productoActual, itemCarrito.unidades);
+
+      //Envio al producto correspondiente, el nuevo stock post compra.
+      $.ajax(`https://fakestoreapi.com/products/+${itemCarrito.idProducto}`,{
+        method:"PATCH",
+        body:JSON.stringify(
+            {
+                stock: productoActual.stock
+            }
+        ),
+        success: function (data, status, xhr) {
+          console.log('status: ' + status + ', data: ' + JSON.stringify(data));
+        },
+        error: jqXHR => {
+          console.log(jqXHR);
+        }
+      });
     }
   }
   compras.push(compraActual);
+
+ 
+
   return compraActual;
 };
 
@@ -54,57 +75,57 @@ const solicitarNumero = (msg) => {
 };
 
 //Inicializacion con datos Dummy
-crearCompra([{
-    idProducto: 3,
-    unidades: 2
-  },
-  {
-    idProducto: 5,
-    unidades: 1
-  },
-  {
-    idProducto: 6,
-    unidades: 20
-  },
-  {
-    idProducto: 2,
-    unidades: 6
-  },
-]);
-crearCompra([{
-    idProducto: 2,
-    unidades: 1
-  },
-  {
-    idProducto: 1,
-    unidades: 10
-  },
-  {
-    idProducto: 3,
-    unidades: 5
-  },
-  {
-    idProducto: 2,
-    unidades: 6
-  },
-]);
-crearCompra([{
-    idProducto: 2,
-    unidades: 1
-  },
-  {
-    idProducto: 1,
-    unidades: 10
-  },
-  {
-    idProducto: 3,
-    unidades: 5
-  },
-  {
-    idProducto: 2,
-    unidades: 6
-  },
-]);
+// crearCompra([{
+//     idProducto: 3,
+//     unidades: 2
+//   },
+//   {
+//     idProducto: 5,
+//     unidades: 1
+//   },
+//   {
+//     idProducto: 6,
+//     unidades: 20
+//   },
+//   {
+//     idProducto: 2,
+//     unidades: 6
+//   },
+// ]);
+// crearCompra([{
+//     idProducto: 2,
+//     unidades: 1
+//   },
+//   {
+//     idProducto: 1,
+//     unidades: 10
+//   },
+//   {
+//     idProducto: 3,
+//     unidades: 5
+//   },
+//   {
+//     idProducto: 2,
+//     unidades: 6
+//   },
+// ]);
+// crearCompra([{
+//     idProducto: 2,
+//     unidades: 1
+//   },
+//   {
+//     idProducto: 1,
+//     unidades: 10
+//   },
+//   {
+//     idProducto: 3,
+//     unidades: 5
+//   },
+//   {
+//     idProducto: 2,
+//     unidades: 6
+//   },
+// ]);
 
 //Armado del listado de productos, para mostrarlo en el HTML como Cards.
 const mostrarProductos = (producto, i) => {
@@ -154,8 +175,8 @@ $.ajax({
       renderCart(obtenerCarrito());
 
       //muestro u oculto el carrito según se necesite.
-      $(".cart").click(function () {
-        let cart = $('#cart-content', this);
+      $("#img-carrito").click(function () {
+        let cart = $('#cart-content');
         if (cart.prop("classList").value == 'hideCart') {
           cart.removeClass('hideCart');
           cart.addClass('showCart');
@@ -164,15 +185,25 @@ $.ajax({
           cart.addClass('hideCart');
         }
       });
-
-      $("#vaciar-carrito").click(emptyCart);
-      $("#delete-cart-item").click(deleteItem);
+      $(document).click(function (e) {
+        let cart = $('#cart-content');
+        if (!$(e.target).hasClass('cart-content') && cart.hasClass('showCart') && !$(e.target).is('#img-carrito') && !$(e.target).is('#cart-content') && !$(e.target).hasClass('widget') ){
+          cart.removeClass('showCart');
+          cart.addClass('hideCart');
+        }
+      });
     });
   },
   error: jqXHR => {
     console.log(jqXHR);
   }
 });
+
+const finalizarCompra = () => {
+  let cart = obtenerCarrito();
+  let compraactual = crearCompra(cart);
+  console.log(compraactual);
+}
 
 const emptyCart = () => {
   localStorage.setItem('carrito', '');
@@ -228,13 +259,11 @@ const obtenerCarrito = () => {
 }
 
 const deleteItem = (e) => {
-  let id = Number(e.target.parentNode.querySelector('.idP').textContent);
+  let id = Number(e.target.parentNode.parentNode.querySelector('.idP').textContent);
   let currentCart = obtenerCarrito();
   for ( let i=0; i<currentCart.productos.length;i++){
-    console.log(currentCart.productos)
     if (currentCart.productos[i].idProducto == id){
       currentCart.productos.splice(i,1);
-      console.log(currentCart.productos);
     }
   }
   localStorage.setItem('carrito', JSON.stringify(currentCart));
@@ -243,20 +272,59 @@ const deleteItem = (e) => {
 
 const renderCart = (cart) => {
   let cartItems = cart.productos;
-  let html = document.querySelector('#cart-list .items');
-  html.textContent = '';
-  cartItems.forEach(item => {
-    let img = item.img;
-    qty = item.unidades;
-    item = buscarProducto(item.idProducto);
-    let newItem = document.createElement('tr');
-    newItem.innerHTML += `<td class="text-center">
-                          <img src="${img}" id="img-carrito"></td>
-                          <td class="d-none idP">${item.id}</td>
-                          <td class="text-center">${item.nombre}</td>
-                          <td class="text-center">$${item.valor}</td>
-                          <td class="text-center">${qty}</td>
-                          <td id="delete-cart-item">X</td>`
-    html.appendChild(newItem);
-  });
+ 
+  //si no tengo productos en el carrito
+  if (cartItems.length == 0){
+    if($('#sinItems').length == 0){
+      $('#cart-content').empty();
+      $('#cart-content').append(`<div class="widget"><p id="sinItems" class="widget">No hay productos en el carrito!</p></div>`);
+    }
+  }else{
+    //si tengo productos en el carrito y, ademas, la tabla de items no existe
+    if( $('.items').length == 0){
+      $('#cart-content').empty();
+      $('#cart-content').prepend(`
+      <table id="cart-list" class="u-full-width widget">
+        <thead class="header widget">
+          <tr class="widget">
+            <th class="text-center widget">Imagen</th>
+            <th class="text-center widget">Nombre</th>
+            <th class="text-center widget">Precio</th>
+            <th class="text-center widget">Cantidad</th>
+            <th class="text-center widget"></th>
+          </tr>
+        </thead>
+        <tbody class="items widget"></tbody>
+      </table>`);
+
+      $('#cart-content').append(`
+      <div class="cartButtons widget">
+        <button id="vaciar-carrito" type="button" class="btn btn-primary widget">Vaciar Carrito</button>
+        <button id="finalizarCompra" type="button" class="btn btn-primary widget">Finalizar</button>
+      </div>`);
+      $("#vaciar-carrito").click(emptyCart);
+      $("#finalizarCompra").click(finalizarCompra);
+    }
+    //Comienzo a crear los elementos del carrito.
+    let html = $('#cart-list .items');
+    html.empty();
+    cartItems.forEach(item => {
+      let img = item.img;
+      qty = item.unidades;
+      item = buscarProducto(item.idProducto);
+      let newItem = document.createElement('tr');
+      newItem.classList.add('widget');
+      newItem.innerHTML += `<td class="text-center widget">
+                            <img src="${img}" id="img-carrito"></td>
+                            <td class="d-none idP widget">${item.id}</td>
+                            <td class="text-center widget">${item.nombre}</td>
+                            <td class="text-center widget">$${item.valor}</td>
+                            <td class="text-center widget">${qty}</td>
+                            <td class="widget"><button class="btn btn-dark widget delete-cart-item">Remover</button></td>`;
+      html.append(newItem);
+    });
+    //le agrego a todos los items, la posibilidad de eliminarse a si mismo.
+    $(".delete-cart-item").click(deleteItem);
+  }
+ 
 }
