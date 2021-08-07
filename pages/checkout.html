@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Importing Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous" defer>
+  </script>
+  <!-- JQUERY -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+    integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous" defer></script>
+
+  <!-- Javascript Propio -->
+  <script src="../js/functions.js" defer></script>
+  <script src="../js/checkout.js" defer></script>
+  <script src="../js/classes.js" defer></script>
+  <script src="../js/form-validation.js" defer></script>
+
+  <!-- Estilos propios -->
+  <link rel="stylesheet" href="../css/estilos.css">
+  <link rel="shortcut icon" href="../images/logoicon.ico" />
+
+  <title>Facturador - Checkout</title>
+</head>
+
+<body class="bg-light d-flex flex-column min-vh-100">
+  <nav class="navbar navbar-expand-lg navbar-light bg-secondary">
+    <div class="container-fluid">
+      <div class="align-middle">
+        <a class="navbar-brand" href="../index.html"><img src="../images/logo.jpg" alt="" width="30"
+            class="d-inline-block align-text-top align-middle me-2">Facturador</a>
+      </div>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
+        aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse justify-content-end" id="navbarNavAltMarkup">
+        <div class="navbar-nav">
+          <a class="nav-link" aria-current="page" href="./index.html">Inicio</a>
+          <a class="nav-link" href="./pages/products.html">Productos</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <div class="container">
+      <div class="py-5 text-center">
+        <h2>Formulario de compra</h2>
+      </div>
+
+      <div class="row g-5">
+        <div class="col-md-5 col-lg-4 order-md-last overflow-hidden" id="cart">
+          <h4 class="d-flex justify-content-between align-items-center mb-3">
+            <span class="text-primary">Su carrito de compra</span>
+            <span class="badge bg-primary rounded-pill" id="cartItemCount"></span>
+          </h4>
+          <ul class="list-group mb-3 overflow-hidden" id="cartItems"></ul>
+        </div>
+        <div class="col-md-7 col-lg-8">
+          <h4 class="mb-3">Datos del Comprador</h4>
+          <form class="needs-validation" novalidate>
+            <div class="row g-3">
+              <div class="col-sm-6">
+                <label for="firstName" class="form-label">Nombre</label>
+                <input type="text" class="form-control" id="firstName" placeholder="" value="" required>
+                <div class="invalid-feedback">
+                  El nombre es un campo requerido
+                </div>
+              </div>
+
+              <div class="col-sm-6">
+                <label for="lastName" class="form-label">Last name</label>
+                <input type="text" class="form-control" id="lastName" placeholder="" value="" required>
+                <div class="invalid-feedback">
+                  El apellido es un campo requerido
+                </div>
+              </div>
+
+              <div class="col-12">
+                <label for="email" class="form-label">Email <span class="text-muted">(Opcional)</span></label>
+                <input type="email" class="form-control" id="email" placeholder="you@example.com">
+                <div class="invalid-feedback">
+                  Ingrese un correo electronico valido para recibir las actualizaciones del envio
+                </div>
+              </div>
+
+              <div class="col-12">
+                <label for="address" class="form-label">Direccion de envio</label>
+                <input type="text" class="form-control" id="address" placeholder="1234 Main St" required>
+                <div class="invalid-feedback">
+                  Ingrese una direccion
+                </div>
+              </div>
+
+              <div class="col-md-5">
+                <label for="country" class="form-label">Pais</label>
+                <select class="form-select" id="country" required>
+                  <option value="">Seleccione...</option>
+                  <option>Argentina</option>
+                </select>
+                <div class="invalid-feedback">
+                  Ingrese un pais valido
+                </div>
+              </div>
+
+              <div class="col-md-4">
+                <label for="state" class="form-label">Provincia</label>
+                <select class="form-select" id="state" required>
+                  <option value="">Seleccione...</option>
+                </select>
+                <div class="invalid-feedback">
+                  Ingrese una provincia
+                </div>
+              </div>
+
+              <div class="col-md-3">
+                <label for="zip" class="form-label">Codigo Postal</label>
+                <input type="text" class="form-control" id="zip" placeholder="" required>
+                <div class="invalid-feedback">
+                  El codigo postal es requerido
+                </div>
+              </div>
+              <div class="col-md-3">
+                <label class="form-label" for="facturaA" aria-disabled="true">Requiere Factura A</label>
+                <input id="checkbox" name="facturaA" type="checkbox" class="form-check-input">
+              </div>
+
+              <div class="col-12" id="cuit">
+                <label for="address" class="form-label">Ingrese el cuit</label>
+                <input type="text" class="form-control" id="cuitinput" placeholder="00-00000000-0">
+                <div class="invalid-feedback">
+                  El CUIT es requerido
+                </div>
+              </div>
+
+
+            </div>
+
+            <hr class="my-4">
+
+            <h4 class="mb-3">Pago</h4>
+
+            <div class="my-3">
+              <div class="form-check">
+                <input id="credit" name="paymentMethod" type="radio" class="form-check-input" checked required>
+                <label class="form-check-label" for="credit" aria-disabled="true">Tarjeta de Credito</label>
+              </div>
+              <div class="form-check">
+                <input id="debit" name="paymentMethod" type="radio" class="form-check-input" required>
+                <label class="form-check-label" for="debit">Tarjeta de debito</label>
+              </div>
+              <div class="form-check">
+                <input id="paypal" name="paymentMethod" type="radio" class="form-check-input" required>
+                <label class="form-check-label" for="paypal">PayPal</label>
+              </div>
+            </div>
+
+            <div class="row gy-3">
+              <div class="col-md-6">
+                <label for="cc-name" class="form-label">Titular de la tarjeta</label>
+                <input type="text" class="form-control" id="cc-name" placeholder="" required>
+                <small class="text-muted">Nombre completo como figura en la tarjeta</small>
+                <div class="invalid-feedback">
+                  El nombre del titular es requerido
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <label for="cc-number" class="form-label">Numero de tarjeta</label>
+                <input type="text" class="form-control" id="cc-number" placeholder="" required>
+                <div class="invalid-feedback">
+                  El numero de tarjeta es requerido
+                </div>
+              </div>
+
+              <div class="col-md-3">
+                <label for="cc-expiration" class="form-label">Fecha de vencimiento</label>
+                <input type="text" class="form-control" id="cc-expiration" placeholder="" required>
+                <div class="invalid-feedback">
+                  La fecha de vencimiento es requerida
+                </div>
+              </div>
+
+              <div class="col-md-3">
+                <label for="cc-cvv" class="form-label">CVV</label>
+                <input type="text" class="form-control" id="cc-cvv" placeholder="" required>
+                <div class="invalid-feedback">
+                  El CVV es requerido
+                </div>
+              </div>
+            </div>
+
+            <hr class="my-4">
+
+            <button class="w-100 btn btn-primary btn-lg" type="submit" id="finalizarCompra">Finalizar compra</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="bg-secondary text-center text-white mt-auto w-100">
+    <div class="container">
+      <!-- Section: Social media -->
+      <section class="">
+        <!-- Facebook -->
+        <a class="btn btn-light btn-floating m-1" href="#"><i class="fab fa-facebook-f"></i></a>
+        <!-- Twitter -->
+        <a class="btn btn-light btn-floating m-1" href="#"><i class="fab fa-twitter"></i></a>
+        <!-- Instagram -->
+        <a class="btn btn-light btn-floating m-1" href="#"><i class="fab fa-instagram"></i></a>
+      </section>
+    </div>
+    <div class="text-center p-1 blackout">
+      <p class="mb-0">Guido Rapisarda</p><a class="text-white"
+        href="mailto:consultas@facturado.com.ar">consultas@facturado.com.ar</a><br>
+      <p class="mb-0">© 2021 Copyright</p>
+    </div>
+  </footer>
+</body>
+
+</html>
